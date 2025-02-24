@@ -20,18 +20,16 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
-import Login from '../Login/Login';
+import { Link } from 'react-router-dom'; // Import Link for navigation
+import Login from '../Login/Login'; // Assuming Login component exists
 
 export default function Navbar() {
-  const [state, setState] = React.useState({
-    left: true, // Set to `true` to show the sidebar on page load
-  });
-
+  const [state, setState] = React.useState({ left: false });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
 
   const toggleDrawer = (open) => {
-    setState({ ...state, left: open });
+    setState({ left: open });
   };
 
   const handleLoginLogout = (loggedIn) => {
@@ -40,18 +38,13 @@ export default function Navbar() {
   };
 
   const list = () => (
-    <Box
-      sx={{ width: 250 }}
-      role="presentation"
-      onClick={() => setState({ ...state, left: false })} // Hide sidebar when clicking on items
-    >
+    <Box sx={{ width: 250 }} role="presentation" onClick={() => setState({ left: false })}>
       <List>
         {['Home', 'About us', 'Contact us'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton component={Link} to={index === 0 ? "/" : (index === 1 ? "/about" : "/contact")}>
               <ListItemIcon>
-                {index === 0 ? <HomeIcon /> :
-                 index === 1 ? <InfoIcon /> : <CallIcon />}
+                {index === 0 ? <HomeIcon /> : index === 1 ? <InfoIcon /> : <CallIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -63,25 +56,27 @@ export default function Navbar() {
         {isLoggedIn ? (
           ['Dashboard', 'Transporter', 'Vehicle', 'Employee', 'Client', 'Order Booking', 'Logout'].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index === 0 ? <DashboardIcon /> :
-                   index === 1 ? <EmojiTransportationIcon /> :
-                   index === 2 ? <AirportShuttleIcon /> :
-                   index === 3 ? <BadgeIcon /> :
-                   index === 4 ? <AssignmentIndIcon /> :
-                   index === 5 ? <StickyNote2Icon /> : <LogoutIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
+              {text === 'Logout' ? (
+                <ListItemButton onClick={() => handleLoginLogout(false)}>
+                  <ListItemIcon><LogoutIcon /></ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              ) : (
+                <ListItemButton component={Link} to={`/${text.toLowerCase().replace(' ', '-')}`}>
+                  <ListItemIcon>
+                    {index === 0 ? <DashboardIcon /> : index === 1 ? <EmojiTransportationIcon /> :
+                     index === 2 ? <AirportShuttleIcon /> : index === 3 ? <BadgeIcon /> :
+                     index === 4 ? <AssignmentIndIcon /> : index === 5 ? <StickyNote2Icon /> : <LogoutIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              )}
             </ListItem>
           ))
         ) : (
           <ListItem disablePadding>
             <ListItemButton onClick={() => setShowLogin(true)}>
-              <ListItemIcon>
-                <LoginIcon />
-              </ListItemIcon>
+              <ListItemIcon><LoginIcon /></ListItemIcon>
               <ListItemText primary="Login" />
             </ListItemButton>
           </ListItem>
@@ -92,30 +87,17 @@ export default function Navbar() {
 
   return (
     <div>
-      {/* Button to open the sidebar */}
-      <Button onClick={() => toggleDrawer(true)} style={{color:'grey'}}><MenuIcon /></Button>
+      <Button onClick={() => toggleDrawer(true)} style={{ color: 'grey' }}><MenuIcon /></Button>
       <Drawer
-  anchor="left"
-  open={state.left}
-  onClose={() => toggleDrawer(false)} // Close the sidebar when clicked outside
-  PaperProps={{
-    sx: {
-      boxShadow: 'none', // Remove shadow
-    },
-  }}
-  BackdropProps={{
-    sx: {
-      backgroundColor: 'transparent', // Set the backdrop to be transparent
-    },
-  }}
->
-  {list()}
-</Drawer>
+        anchor="left"
+        open={state.left}
+        onClose={() => toggleDrawer(false)}
+        PaperProps={{ sx: { boxShadow: 'none' } }}
+        BackdropProps={{ sx: { backgroundColor: 'transparent' } }}
+      >
+        {list()}
+      </Drawer>
 
-
-
-
-      {/* Conditionally render Login component if needed */}
       {showLogin && <Login onLogin={handleLoginLogout} />}
     </div>
   );

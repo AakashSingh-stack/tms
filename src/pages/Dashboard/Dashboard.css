@@ -1,0 +1,17 @@
+.hDash {
+    width: 250vh;
+    text-align: center;
+    font-size: xx-large;
+    padding-bottom: 5px;
+    color: rgba(0, 0, 0, 0.7);
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+td {
+    padding-left: 40px;
+    padding-top: 25px;
+}
+.imoo {
+    font-size: 50px !important;
+}
+
+  
