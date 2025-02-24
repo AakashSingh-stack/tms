@@ -24,37 +24,33 @@ import Login from '../Login/Login';
 
 export default function Navbar() {
   const [state, setState] = React.useState({
-    left: false,
+    left: true, // Set to `true` to show the sidebar on page load
   });
 
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [showLogin, setShowLogin] = React.useState(false);
 
-  const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
+  const toggleDrawer = (open) => {
     setState({ ...state, left: open });
   };
 
   const handleLoginLogout = (loggedIn) => {
     setIsLoggedIn(loggedIn);
-    setShowLogin(false); 
+    setShowLogin(false);
   };
 
   const list = () => (
     <Box
       sx={{ width: 250 }}
       role="presentation"
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
+      onClick={() => setState({ ...state, left: false })} // Hide sidebar when clicking on items
     >
       <List>
         {['Home', 'About us', 'Contact us'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index === 0 ? <HomeIcon /> : 
+                {index === 0 ? <HomeIcon /> :
                  index === 1 ? <InfoIcon /> : <CallIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
@@ -82,7 +78,7 @@ export default function Navbar() {
           ))
         ) : (
           <ListItem disablePadding>
-            <ListItemButton onClick={() => setShowLogin(true)}> {/* Show Login form */}
+            <ListItemButton onClick={() => setShowLogin(true)}>
               <ListItemIcon>
                 <LoginIcon />
               </ListItemIcon>
@@ -96,15 +92,31 @@ export default function Navbar() {
 
   return (
     <div>
-      <Button onClick={toggleDrawer(true)}><MenuIcon /></Button>
+      {/* Button to open the sidebar */}
+      <Button onClick={() => toggleDrawer(true)} style={{color:'grey'}}><MenuIcon /></Button>
       <Drawer
-        anchor="left"
-        open={state.left}
-        onClose={toggleDrawer(false)}
-      >
-        {list()}
-      </Drawer>
-      {showLogin && <Login onLogin={handleLoginLogout} />} {/* Conditionally render Login component */}
+  anchor="left"
+  open={state.left}
+  onClose={() => toggleDrawer(false)} // Close the sidebar when clicked outside
+  PaperProps={{
+    sx: {
+      boxShadow: 'none', // Remove shadow
+    },
+  }}
+  BackdropProps={{
+    sx: {
+      backgroundColor: 'transparent', // Set the backdrop to be transparent
+    },
+  }}
+>
+  {list()}
+</Drawer>
+
+
+
+
+      {/* Conditionally render Login component if needed */}
+      {showLogin && <Login onLogin={handleLoginLogout} />}
     </div>
   );
 }

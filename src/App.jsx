@@ -1,12 +1,17 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes,Route } from 'react-router-dom';
 import Navbar from './Components/Navbar/Navbar';
+import { Sidebar } from './Components/Navbar/Sidebar';
 
 function App() {
   return (
-    <div>
-      <Navbar />
-
-    </div>
+    <Router>
+        <Sidebar />
+        <Routes>
+          {/* <Route path='/' element={}/> */}
+        </Routes>
+  </Router>
+    
   );
 }
 
